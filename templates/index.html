@@ -72,12 +72,86 @@
     </div>
 
     <script>
-        // Add loading state to form
-        document.getElementById('generateForm').addEventListener('submit', function() {
+        // Handle form submission with AJAX to prevent page reload and manage loading states
+        document.getElementById('generateForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
             const buttons = document.querySelectorAll('.btn');
+            const clickedButton = e.submitter; // Get the button that was clicked
+
+            // Disable all buttons and show loading state
             buttons.forEach(btn => {
                 btn.disabled = true;
                 btn.textContent = 'Generando...';
+            });
+
+            // Get form data
+            const formData = new FormData(this);
+            formData.set('format', clickedButton.value); // Set the format from clicked button
+
+            // Send request
+            fetch('/generate', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la generación de datos');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Create download link
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+
+                // Set filename based on format
+                const format = clickedButton.value;
+                let filename = 'datos';
+                if (format === 'json') {
+                    filename += '.json';
+                } else if (format === 'csv') {
+                    filename += '.csv';
+                } else if (format === 'sql') {
+                    filename += '.sql';
+                }
+                a.download = filename;
+
+                // Trigger download
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                // Re-enable buttons and restore original text
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    if (btn.value === 'json') {
+                        btn.textContent = '📄 Generar JSON';
+                    } else if (btn.value === 'csv') {
+                        btn.textContent = '📊 Generar CSV';
+                    } else if (btn.value === 'sql') {
+                        btn.textContent = '🗄️ Generar SQL';
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al generar los datos: ' + error.message);
+
+                // Re-enable buttons on error
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    if (btn.value === 'json') {
+                        btn.textContent = '📄 Generar JSON';
+                    } else if (btn.value === 'csv') {
+                        btn.textContent = '📊 Generar CSV';
+                    } else if (btn.value === 'sql') {
+                        btn.textContent = '🗄️ Generar SQL';
+                    }
+                });
             });
         });
     </script>
