@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Datos Sintéticos - Laboratorio Clínico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧪 Generador de Datos Sintéticos</h1>
+            <p class="subtitle">Laboratorio Clínico - Generación Masiva de Datos</p>
+        </header>
+
+        <main>
+            <div class="form-card">
+                <h2>Configurar Generación</h2>
+                <form method="POST" action="/generate" id="generateForm">
+                    <div class="form-group">
+                        <label for="num_clientes">Número de Clientes:</label>
+                        <input type="number" id="num_clientes" name="num_clientes" value="10" min="1" max="10000">
+                        <span class="help-text">Máximo 10,000</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="num_medicos">Número de Médicos:</label>
+                        <input type="number" id="num_medicos" name="num_medicos" value="5" min="1" max="1000">
+                        <span class="help-text">Máximo 1,000</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="num_ordenes">Número de Órdenes:</label>
+                        <input type="number" id="num_ordenes" name="num_ordenes" value="20" min="1" max="50000">
+                        <span class="help-text">Máximo 50,000</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="num_facturas">Número de Facturas:</label>
+                        <input type="number" id="num_facturas" name="num_facturas" value="15" min="1" max="25000">
+                        <span class="help-text">Máximo 25,000</span>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" name="format" value="json" class="btn btn-primary">
+                            📄 Generar JSON
+                        </button>
+                        <button type="submit" name="format" value="csv" class="btn btn-secondary">
+                            📊 Generar CSV
+                        </button>
+                        <button type="submit" name="format" value="sql" class="btn btn-success">
+                            🗄️ Generar SQL
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="info-card">
+                <h3>ℹ️ Información del Sistema</h3>
+                <ul>
+                    <li><strong>Referencial Integrity:</strong> Garantizada entre todas las tablas</li>
+                    <li><strong>Coherencia Temporal:</strong> Fechas lógicas en órdenes y facturas</li>
+                    <li><strong>Formatos Soportados:</strong> JSON, CSV, SQL INSERT</li>
+                    <li><strong>Validación:</strong> Verificación automática de datos</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Generador de Datos Sintéticos - Laboratorio Clínico</p>
+        </footer>
+    </div>
+
+    <script>
+        // Add loading state to form
+        document.getElementById('generateForm').addEventListener('submit', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.textContent = 'Generando...';
+            });
+        });
+    </script>
+</body>
+</html>
