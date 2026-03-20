@@ -6,6 +6,11 @@ from generators.salaries import generate_medicos
 from generators.departments import generate_ordenes
 from generators.titles import generate_detalle_ordenes
 from generators.dept_emp import generate_facturas, generate_detalle_facturas, generate_resultados
+from generators.dirty_generators import (
+    generate_clientes_dirty, generate_medicos_dirty, generate_ordenes_dirty,
+    generate_detalle_ordenes_dirty, generate_facturas_dirty,
+    generate_detalle_facturas_dirty, generate_resultados_dirty
+)
 from services.db_writer import generate_sql, export_json, export_csv
 from services.validator import validate_data
 from services.progress import ProgressMonitor
@@ -27,35 +32,60 @@ def generate():
     num_ordenes = int(request.form.get('num_ordenes', DEFAULT_NUM_ORDENES))
     num_facturas = int(request.form.get('num_facturas', DEFAULT_NUM_FACTURAS))
     format_type = request.form.get('format', 'json')
+    data_type = request.form.get('data_type', 'clean')
 
-    progress.update("Generando clientes")
-    clientes = generate_clientes(num_clientes)
+    if data_type == 'dirty':
+        progress.update("Generando clientes con datos sucios")
+        clientes = generate_clientes_dirty(num_clientes)
 
-    progress.update("Generando médicos")
-    medicos = generate_medicos(num_medicos)
+        progress.update("Generando médicos con datos sucios")
+        medicos = generate_medicos_dirty(num_medicos)
 
-    progress.update("Generando órdenes")
-    ordenes = generate_ordenes(num_ordenes, clientes, medicos)
+        progress.update("Generando órdenes con datos sucios")
+        ordenes = generate_ordenes_dirty(num_ordenes, clientes, medicos)
 
-    progress.update("Generando detalles de orden")
-    detalles_orden = generate_detalle_ordenes(num_ordenes, ordenes)
+        progress.update("Generando detalles de orden con datos sucios")
+        detalles_orden = generate_detalle_ordenes_dirty(num_ordenes, ordenes)
 
-    progress.update("Generando facturas")
-    facturas = generate_facturas(num_facturas, clientes, medicos, ordenes)
+        progress.update("Generando facturas con datos sucios")
+        facturas = generate_facturas_dirty(num_facturas, clientes, medicos, ordenes)
 
-    progress.update("Generando detalles de factura")
-    detalles_fact = generate_detalle_facturas(facturas, detalles_orden)
+        progress.update("Generando detalles de factura con datos sucios")
+        detalles_fact = generate_detalle_facturas_dirty(facturas, detalles_orden)
 
-    progress.update("Generando resultados")
-    resultados = generate_resultados(detalles_orden, [{'IDParametro': 1, 'IDTipoExamen': 1, 'NombreParametro': 'Proteína C Reactiva (PCR)', 'Precio': 100.00}, {'IDParametro': 4, 'IDTipoExamen': 2, 'NombreParametro': 'Eritrocitos', 'Precio': 15.00}, {'IDParametro': 18, 'IDTipoExamen': 3, 'NombreParametro': 'Color', 'Precio': 25.00}])
+        progress.update("Generando resultados con datos sucios")
+        resultados = generate_resultados_dirty(detalles_orden, [{'IDParametro': 1, 'IDTipoExamen': 1, 'NombreParametro': 'Proteína C Reactiva (PCR)', 'Precio': 100.00}, {'IDParametro': 4, 'IDTipoExamen': 2, 'NombreParametro': 'Eritrocitos', 'Precio': 15.00}, {'IDParametro': 18, 'IDTipoExamen': 3, 'NombreParametro': 'Color', 'Precio': 25.00}])
 
-    progress.update("Validando datos")
-    errors = validate_data(clientes, medicos, ordenes, detalles_orden, facturas, detalles_fact, resultados)
-    if errors:
-        progress.update(f"Errores encontrados: {len(errors)}")
-        for error in errors[:5]:  # Mostrar primeros 5
-            progress.update(error)
-        return "Errores en validación", 400
+        progress.update("Omitiendo validación para datos sucios")
+    else:
+        progress.update("Generando clientes")
+        clientes = generate_clientes(num_clientes)
+
+        progress.update("Generando médicos")
+        medicos = generate_medicos(num_medicos)
+
+        progress.update("Generando órdenes")
+        ordenes = generate_ordenes(num_ordenes, clientes, medicos)
+
+        progress.update("Generando detalles de orden")
+        detalles_orden = generate_detalle_ordenes(num_ordenes, ordenes)
+
+        progress.update("Generando facturas")
+        facturas = generate_facturas(num_facturas, clientes, medicos, ordenes)
+
+        progress.update("Generando detalles de factura")
+        detalles_fact = generate_detalle_facturas(facturas, detalles_orden)
+
+        progress.update("Generando resultados")
+        resultados = generate_resultados(detalles_orden, [{'IDParametro': 1, 'IDTipoExamen': 1, 'NombreParametro': 'Proteína C Reactiva (PCR)', 'Precio': 100.00}, {'IDParametro': 4, 'IDTipoExamen': 2, 'NombreParametro': 'Eritrocitos', 'Precio': 15.00}, {'IDParametro': 18, 'IDTipoExamen': 3, 'NombreParametro': 'Color', 'Precio': 25.00}])
+
+        progress.update("Validando datos")
+        errors = validate_data(clientes, medicos, ordenes, detalles_orden, facturas, detalles_fact, resultados)
+        if errors:
+            progress.update(f"Errores encontrados: {len(errors)}")
+            for error in errors[:5]:  # Mostrar primeros 5
+                progress.update(error)
+            return "Errores en validación", 400
 
     data = {
         'clientes': clientes,

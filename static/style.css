@@ -79,6 +79,51 @@ main {
     color: #2d3748;
 }
 
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+}
+
+.radio-label:hover {
+    border-color: #667eea;
+    background: #f0f4ff;
+}
+
+.radio-label input[type="radio"] {
+    margin: 0;
+    margin-top: 2px;
+    accent-color: #667eea;
+}
+
+.radio-text {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 5px;
+}
+
+.radio-label small {
+    color: #718096;
+    font-weight: normal;
+}
+
+.radio-label input[type="radio"]:checked + .radio-text {
+    color: #667eea;
+}
+
 .form-group input {
     width: 100%;
     padding: 12px 15px;

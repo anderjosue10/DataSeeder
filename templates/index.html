@@ -41,6 +41,22 @@
                         <span class="help-text">Máximo 25,000</span>
                     </div>
 
+                    <div class="form-group">
+                        <label>Tipo de Datos:</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="data_type" value="clean" checked>
+                                <span class="radio-text">🧹 Datos Coherentes</span>
+                                <small>Integridad referencial, datos válidos</small>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="data_type" value="dirty">
+                                <span class="radio-text">🗑️ Datos Sucios</span>
+                                <small>Campos null, datos inválidos, inconsistencias</small>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="button-group">
                         <button type="submit" name="format" value="json" class="btn btn-primary">
                             📄 Generar JSON
@@ -58,10 +74,10 @@
             <div class="info-card">
                 <h3>ℹ️ Información del Sistema</h3>
                 <ul>
-                    <li><strong>Referencial Integrity:</strong> Garantizada entre todas las tablas</li>
-                    <li><strong>Coherencia Temporal:</strong> Fechas lógicas en órdenes y facturas</li>
-                    <li><strong>Formatos Soportados:</strong> JSON, CSV, SQL INSERT</li>
-                    <li><strong>Validación:</strong> Verificación automática de datos</li>
+                    <li><strong>Datos Coherentes:</strong> Integridad referencial garantizada, datos válidos</li>
+                    <li><strong>Datos Sucios:</strong> Campos null, referencias inválidas, datos inconsistentes</li>
+                    <li><strong>Formatos:</strong> JSON, CSV, SQL INSERT con nombres de archivo correctos</li>
+                    <li><strong>Validación:</strong> Solo para datos coherentes</li>
                 </ul>
             </div>
         </main>
